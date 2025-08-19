@@ -39,4 +39,9 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
+    // 글 삭제를 실제 row를 날리지 않고, 삭제 일자만 기록하기 위해 메서드를 만들자.
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
