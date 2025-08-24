@@ -19,7 +19,7 @@ public class Post extends BaseEntity {
     private Long postId; // post 고유 ID (Auto Increment)
 
     @ManyToOne(fetch = FetchType.LAZY) // 회원 : 게시글이 1 : N 관계이므로 게시글 : 회원은 N : 1 관계
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     //private User user; // user 고유 ID (FK, 외래키)
 
     @Column(nullable = false, length = 150)
@@ -43,6 +43,9 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> images = new ArrayList<>(); // 이미지 연관관계 (양방향)
 
+    @Version
+    private Long version; // 동시에 좋아요를 누르는 상황 등에서 누락 제어를 위해 버전 필드 추가
+
     // 생성자 (새로운 글 등록 시 사용)
     @Builder
     public Post(String title, String content) {
@@ -54,8 +57,11 @@ public class Post extends BaseEntity {
     }
 
     // 글 수정을 위한 update 메서드 분리해두기
-    public void update(String title, String content) {
+    public void updateTitle(String title) {
         this.title = title;
+    }
+
+    public void updateContent(String content) {
         this.content = content;
     }
 

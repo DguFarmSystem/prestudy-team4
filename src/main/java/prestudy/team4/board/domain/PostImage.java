@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "images")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class PostImage {
         this.imageUrl = imageUrl;
     }
 
-    public void setPost(Post post) { // Post 설정용 setter
+    protected void setPost(Post post) { // Post 설정용 setter
         this.post = post;
     }
 }

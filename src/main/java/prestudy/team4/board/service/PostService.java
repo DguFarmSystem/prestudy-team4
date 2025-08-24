@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true) // 읽기 전용 트랜젝션을 기본값으로 적용해두자.
 public class PostService { // 서비스: 비즈니스 로직 담당.
     private final PostRepository postRepository;
 
@@ -24,7 +25,7 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
     }
 
     // 게시글 작성 (C)
-    @Transactional
+    @Transactional(readOnly = false)
     public PostResponseDto createPost(PostCreateDto postCreateDto, List<MultipartFile> images) {
         Post post = Post.builder()
                 .title(postCreateDto.getTitle())
@@ -70,15 +71,23 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
     }
 
     // 게시글 수정 (U)
+    @Transactional(readOnly = false)
     public PostResponseDto updatePost(Long id, PostUpdateDto postUpdateDto) {
-        Post targetPost = getPostEntityById(id);
-        targetPost.update(postUpdateDto.getTitle(), postUpdateDto.getContent());
+        Post targetPost = postRepository.findByIdWithImages(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없어요: " + id));
+
+        if (postUpdateDto.getTitle() != null) {
+            targetPost.updateTitle(postUpdateDto.getTitle());
+        }
+        if (postUpdateDto.getContent() != null) {
+            targetPost.updateContent(postUpdateDto.getContent());
+        }
         Post updatedPost = postRepository.save(targetPost);
         return new PostResponseDto(updatedPost);
     }
 
     // 게시글 삭제 (D) - softDelete!
-    @Transactional
+    @Transactional(readOnly = false)
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없어요: " + id));
