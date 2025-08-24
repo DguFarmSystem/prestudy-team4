@@ -27,7 +27,7 @@ public class PostImage {
         this.imageUrl = imageUrl;
     }
 
-    protected void setPost(Post post) { // Post 설정용 setter
+    public void setPost(Post post) { // Post 설정용 setter
         this.post = post;
     }
 }

@@ -6,6 +6,8 @@ import prestudy.team4.board.dto.PostCreateDto;
 import prestudy.team4.board.dto.PostResponseDto;
 import prestudy.team4.board.dto.PostUpdateDto;
 import prestudy.team4.board.service.PostService;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,9 +21,13 @@ public class PostController {
     }
 
     // 게시글 작성 (Post)
-    @PostMapping
-    public PostResponseDto create(@Valid @RequestBody PostCreateDto postCreateDto) {
-        return postService.createPost(postCreateDto);
+    // 이미지 파일과 게시글 데이터를 동시에 받기 위해서 multipart/form-data를 처리할 수 있게 하자.
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostResponseDto create(
+            @Valid @RequestPart("postCreateDto") PostCreateDto postCreateDto,
+            @RequestPart("images") List<MultipartFile> images
+    ) {
+        return postService.createPost(postCreateDto, images);
     }
 
     // 게시글 목록 조회 (Get)
