@@ -8,6 +8,7 @@ import prestudy.team4.board.domain.PostImage;
 import prestudy.team4.board.dto.PostCreateDto;
 import prestudy.team4.board.dto.PostResponseDto;
 import prestudy.team4.board.dto.PostUpdateDto;
+import prestudy.team4.board.exception.PostNotFoundException;
 import prestudy.team4.board.repository.PostRepository;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
     // 게시글 단일 조회 (R)
     public PostResponseDto getPostById(Long id) {
         Post post = postRepository.findByIdWithImages(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없어요: " + id));
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
         return new PostResponseDto(post);
     }
 
@@ -67,14 +68,14 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
     // 키 값을 바탕으로 엔티티를 가져오기.
     public Post getPostEntityById(Long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없어요: " + id));
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
     }
 
     // 게시글 수정 (U)
     @Transactional(readOnly = false)
     public PostResponseDto updatePost(Long id, PostUpdateDto postUpdateDto) {
         Post targetPost = postRepository.findByIdWithImages(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없어요: " + id));
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
 
         if (postUpdateDto.getTitle() != null) {
             targetPost.updateTitle(postUpdateDto.getTitle());
@@ -90,7 +91,7 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
     @Transactional(readOnly = false)
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없어요: " + id));
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
         post.softDelete();
     }
 }

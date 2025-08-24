@@ -1,6 +1,8 @@
 package prestudy.team4.board.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import prestudy.team4.board.dto.PostCreateDto;
 import prestudy.team4.board.dto.PostResponseDto;
@@ -24,9 +26,11 @@ public class PostController {
     // 이미지 파일과 게시글 데이터를 동시에 받기 위해서 multipart/form-data를 처리할 수 있게 하자.
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PostResponseDto create(
+            @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestPart("postCreateDto") PostCreateDto postCreateDto,
             @RequestPart("images") List<MultipartFile> images
     ) {
+        String username = userDetails.getUsername(); // email 등으로 바꿀 필요
         return postService.createPost(postCreateDto, images);
     }
 
