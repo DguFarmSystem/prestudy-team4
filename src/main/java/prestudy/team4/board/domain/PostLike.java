@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter @Setter
+@Getter
 @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
 @Table(name = "post_likes")
