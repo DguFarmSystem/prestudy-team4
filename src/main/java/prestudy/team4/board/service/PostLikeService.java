@@ -8,8 +8,6 @@ import prestudy.team4.board.domain.PostLike;
 import prestudy.team4.board.domain.PostLikeId;
 import prestudy.team4.board.repository.PostLikeRepository;
 
-import java.time.LocalDateTime;
-
 @RequiredArgsConstructor
 @Service
 public class PostLikeService {
@@ -23,9 +21,10 @@ public class PostLikeService {
     public void like(Long postId, Long userId) {
         PostLikeId id = new PostLikeId(postId, userId);
         if (postLikeRepository.existsById_PostIdAndId_UserId(postId, userId)) return;
+
+        // createdAt 제거 (BaseEntity가 자동 처리)
         postLikeRepository.save(PostLike.builder()
                 .id(id)
-                .createdAt(LocalDateTime.now())
                 .build());
     }
 
@@ -48,3 +47,4 @@ public class PostLikeService {
         return postLikeRepository.existsById_PostIdAndId_UserId(postId, userId);
     }
 }
+
