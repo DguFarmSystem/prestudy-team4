@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // HTTP 400 BAD_REQUEST
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class IllegalArgumentException extends RuntimeException {
-    public IllegalArgumentException(String message) {
+public class BadRequestException extends RuntimeException {
+    public BadRequestException(String message) {
         super(message);
     }
 }

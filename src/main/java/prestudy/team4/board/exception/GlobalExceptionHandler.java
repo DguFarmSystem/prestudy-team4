@@ -20,9 +20,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    // IllegalArgumentException 관리
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+    // BadRequestException 관리
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponseDto> handleBadRequestException(BadRequestException ex) {
         ErrorResponseDto response = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(), // 400
                 ex.getMessage() // 예외 메시지
