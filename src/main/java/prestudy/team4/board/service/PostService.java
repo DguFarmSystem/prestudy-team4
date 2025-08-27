@@ -11,7 +11,6 @@ import prestudy.team4.board.dto.PostUpdateDto;
 import prestudy.team4.board.exception.PostNotFoundException;
 import prestudy.team4.board.repository.PostRepository;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +18,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true) // 읽기 전용 트랜젝션을 기본값으로 적용해두자.
 public class PostService { // 서비스: 비즈니스 로직 담당.
     private final PostRepository postRepository;
+    private final S3Uploader s3Uploader;
 
     // 생성자
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, S3Uploader s3Uploader) {
         this.postRepository = postRepository;
+        this.s3Uploader = s3Uploader;
     }
 
     // 게시글 작성 (C)
@@ -36,15 +37,11 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
         // 이미지가 있으면 이미지를 업로드하자.
         if (images != null && !images.isEmpty()) {
             for (MultipartFile imageFile : images) { // 각 이미지에 대해 반복
-                /* try {
-                    String imageUrl = imageUploader.upload(imageFile);
-                    PostImage postImage = PostImage.builder()
-                            .imageUrl(imageUrl)
-                            .build();
-                    post.addImage(postImage);
-                } catch (IOException err) {
-                    throw new RuntimeException("이미지 업로드에 실패했어요. ", err);
-                } */
+                String imageUrl = s3Uploader.upload(imageFile, "images");
+                PostImage postImage = PostImage.builder()
+                        .imageUrl(imageUrl)
+                        .build();
+                post.addImage(postImage);
             }
         }
         Post savedPost = postRepository.save(post);
