@@ -1,7 +1,7 @@
 package prestudy.team4.board.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import prestudy.team4.board.entity.User;
+import prestudy.team4.board.domain.User;
 
 import java.util.Optional;
 

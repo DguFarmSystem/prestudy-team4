@@ -3,7 +3,7 @@ package prestudy.team4.board.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import prestudy.team4.board.entity.User;
+import prestudy.team4.board.domain.User;
 import prestudy.team4.board.dto.JoinRequest;
 import prestudy.team4.board.dto.LoginRequest;
 import prestudy.team4.board.service.AuthService;

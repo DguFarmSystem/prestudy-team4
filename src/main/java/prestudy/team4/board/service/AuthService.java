@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import prestudy.team4.board.entity.User;
+import prestudy.team4.board.domain.User;
 import prestudy.team4.board.dto.JoinRequest;
 import prestudy.team4.board.dto.LoginRequest;
 import prestudy.team4.board.repository.UserRepository;
