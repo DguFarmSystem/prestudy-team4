@@ -2,10 +2,10 @@
 package prestudy.team4.board.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prestudy.team4.board.domain.PostLike;
-import prestudy.team4.board.domain.PostLikeId;
 import prestudy.team4.board.repository.PostLikeRepository;
 
 @RequiredArgsConstructor
@@ -14,37 +14,33 @@ public class PostLikeService {
 
     private final PostLikeRepository postLikeRepository;
 
-    /**
-     * 멱등(여러 번 요청해도 결과 동일): 이미 눌렀으면 조용히 통과
-     */
     @Transactional
     public void like(Long postId, Long userId) {
-        PostLikeId id = new PostLikeId(postId, userId);
-        if (postLikeRepository.existsById_PostIdAndId_UserId(postId, userId)) return;
-
-        // createdAt 제거 (BaseEntity가 자동 처리)
-        postLikeRepository.save(PostLike.builder()
-                .id(id)
-                .build());
+        if (postLikeRepository.existsByPostIdAndUserId(postId, userId)) return;
+        try {
+            postLikeRepository.save(PostLike.builder()
+                    .postId(postId)
+                    .userId(userId)
+                    .build());
+        } catch (DataIntegrityViolationException e) {
+            // 동시 요청으로 UNIQUE 위반 시 멱등하게 무시 (정책에 따라 409로 바꿔도 됨)
+        }
     }
 
-    /**
-     * 없으면 조용히 통과
-     */
     @Transactional
     public void unlike(Long postId, Long userId) {
-        postLikeRepository.deleteById(new PostLikeId(postId, userId));
+        postLikeRepository.deleteByPostIdAndUserId(postId, userId);
     }
 
     @Transactional(readOnly = true)
     public long count(Long postId) {
-        return postLikeRepository.countById_PostId(postId);
+        return postLikeRepository.countByPostId(postId);
     }
 
     @Transactional(readOnly = true)
     public boolean liked(Long postId, Long userId) {
-        if (userId == null) return false;
-        return postLikeRepository.existsById_PostIdAndId_UserId(postId, userId);
+        return userId != null && postLikeRepository.existsByPostIdAndUserId(postId, userId);
     }
 }
+
 
