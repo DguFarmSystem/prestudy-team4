@@ -28,12 +28,6 @@ public class Post extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 내용 (NOT NULL, TEXT)
 
-    @Column
-    private LocalDateTime deletedAt; // 삭제일시
-
-    @Column(nullable = false)
-    private boolean isDeleted; // 삭제 여부 T/F로 관리
-
     @Column(nullable = false)
     private Long likeCount; // 좋아요 개수 (NOT NULL)
 
@@ -53,7 +47,6 @@ public class Post extends BaseEntity {
         this.content = content;
         this.likeCount = 0L;
         this.commentCount = 0L;
-        this.isDeleted = false;
     }
 
     // 글 수정을 위한 update 메서드 분리해두기

@@ -66,11 +66,15 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
         Post targetPost = postRepository.findByIdWithImages(id)
                 .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
 
-        if (postUpdateDto.getTitle() != null) {
-            targetPost.updateTitle(postUpdateDto.getTitle());
-        }
-        if (postUpdateDto.getContent() != null) {
-            targetPost.updateContent(postUpdateDto.getContent());
+        targetPost.updateTitle(postUpdateDto.getTitle());
+        targetPost.updateContent(postUpdateDto.getContent());
+        targetPost.getImages().clear(); // 기존 이미지 목록을 비워요.
+
+        if (postUpdateDto.getImageKeys() != null) { // 이미지 필드가 있다면 이미지 업로드를 진행해요.
+            postUpdateDto.getImageKeys().forEach(key -> {
+                PostImage newImage = new PostImage(key);
+                targetPost.addImage(newImage);
+            });
         }
         Post updatedPost = postRepository.save(targetPost);
         return new PostResponseDto(updatedPost);
