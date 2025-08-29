@@ -27,11 +27,9 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PostResponseDto create(
             @AuthenticationPrincipal UserDetails userDetails,
-            @Valid @RequestPart("postCreateDto") PostCreateDto postCreateDto,
-            @RequestPart("images") List<MultipartFile> images
-    ) {
+            @Valid @RequestBody PostCreateDto postCreateDto) {
         String username = userDetails.getUsername(); // email 등으로 바꿀 필요
-        return postService.createPost(postCreateDto, images);
+        return postService.createPost(postCreateDto);
     }
 
     // 게시글 목록 조회 (Get)
