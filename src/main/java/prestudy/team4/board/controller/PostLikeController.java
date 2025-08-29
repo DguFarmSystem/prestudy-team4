@@ -9,7 +9,7 @@ import prestudy.team4.board.service.PostLikeService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/posts/{postId}/likes")
+@RequestMapping("/api/v1/posts/{postId}/likes")
 public class PostLikeController {
 
     private final PostLikeService postLikeService;
