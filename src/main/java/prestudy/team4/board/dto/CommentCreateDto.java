@@ -2,7 +2,11 @@
 package prestudy.team4.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record CommentCreateDto(
-        @NotBlank String content
+        @NotBlank
+        @Size(max = 200)
+        String content
 ) {}
+

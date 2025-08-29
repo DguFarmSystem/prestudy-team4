@@ -47,7 +47,7 @@ public class CommentService {
 
     private CommentResponseDto toResponse(Comment c) {
         return new CommentResponseDto(
-                c.getId(),
+                c.getCommentId(),
                 c.getPostId(),
                 c.getUserId(),
                 c.getContent(),
