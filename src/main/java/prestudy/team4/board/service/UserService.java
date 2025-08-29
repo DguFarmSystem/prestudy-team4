@@ -2,7 +2,7 @@ package prestudy.team4.board.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import prestudy.team4.board.entity.User;
+import prestudy.team4.board.domain.User;
 import prestudy.team4.board.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
