@@ -1,5 +1,6 @@
 package prestudy.team4.board.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,33 +17,24 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true) // 읽기 전용 트랜젝션을 기본값으로 적용해두자.
+@RequiredArgsConstructor // 생성자 주입
 public class PostService { // 서비스: 비즈니스 로직 담당.
     private final PostRepository postRepository;
-    private final S3Uploader s3Uploader;
-
-    // 생성자
-    public PostService(PostRepository postRepository, S3Uploader s3Uploader) {
-        this.postRepository = postRepository;
-        this.s3Uploader = s3Uploader;
-    }
 
     // 게시글 작성 (C)
     @Transactional(readOnly = false)
-    public PostResponseDto createPost(PostCreateDto postCreateDto, List<MultipartFile> images) {
+    public PostResponseDto createPost(PostCreateDto postCreateDto) {
         Post post = Post.builder()
                 .title(postCreateDto.getTitle())
                 .content(postCreateDto.getContent())
                 .build();
 
         // 이미지가 있으면 이미지를 업로드하자.
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile imageFile : images) { // 각 이미지에 대해 반복
-                String imageUrl = s3Uploader.upload(imageFile, "images");
-                PostImage postImage = PostImage.builder()
-                        .imageUrl(imageUrl)
-                        .build();
+        if (postCreateDto.getImageKeys() != null) {
+            postCreateDto.getImageKeys().forEach(key -> {
+                PostImage postImage = new PostImage(key);
                 post.addImage(postImage);
-            }
+            });
         }
         Post savedPost = postRepository.save(post);
         return new PostResponseDto(savedPost);
@@ -84,11 +76,11 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
         return new PostResponseDto(updatedPost);
     }
 
-    // 게시글 삭제 (D) - softDelete!
+    // 게시글 삭제 (D)
     @Transactional(readOnly = false)
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
-        post.softDelete();
+        postRepository.deleteById(id);
     }
 }
