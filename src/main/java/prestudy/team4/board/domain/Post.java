@@ -20,7 +20,7 @@ public class Post extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY) // 회원 : 게시글이 1 : N 관계이므로 게시글 : 회원은 N : 1 관계
     @JoinColumn(name = "user_id", nullable = false)
-    //private User user; // user 고유 ID (FK, 외래키)
+    private User user; // user 고유 ID (FK, 외래키)
 
     @Column(nullable = false, length = 150)
     private String title; // 제목 (NOT NULL, VARCHAR(150))
