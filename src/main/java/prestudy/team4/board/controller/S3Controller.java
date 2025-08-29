@@ -25,7 +25,7 @@ public class S3Controller {
             @RequestParam String filename
     ) {
         //Long userId = user.getId();
-        S3UrlDto s3UrlDto = s3Service.getPutS3Url(postId, filename);
+        S3UrlDto s3UrlDto = s3Service.getPutS3Url(filename);
         return new ResponseEntity<>(s3UrlDto, HttpStatusCode.valueOf(200));
     }
 

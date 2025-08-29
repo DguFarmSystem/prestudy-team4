@@ -26,11 +26,11 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket; // 버킷명 저장
 
-    public S3UrlDto getPutS3Url(Long postId, String filename) {
+    public S3UrlDto getPutS3Url(String filename) {
         // 이미지를 업로드할 때 s3의 PUT 주소를 반환해주자.
-        String key = "posts/" + postId + "/" + UUID.randomUUID() + "/" + filename;
-        // 파일이름 설정하기 (posts/{postId}/랜덤Id/{파일명})
-        // userId 포함하도록 바꿀 필요성 존재
+        String key = "posts/" + UUID.randomUUID() + "/" + filename;
+        // 파일이름 설정하기 (posts/랜덤Id/{파일명})
+        // userId 및 postId 포함하도록 바꿀 필요성 존재
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
