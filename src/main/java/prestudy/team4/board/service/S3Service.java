@@ -19,7 +19,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class S3Service {
     private final S3Presigner s3Presigner;
 
@@ -30,16 +29,15 @@ public class S3Service {
         // 이미지를 업로드할 때 s3의 PUT 주소를 반환해주자.
         String key = "posts/" + UUID.randomUUID() + "/" + filename;
         // 파일이름 설정하기 (posts/랜덤Id/{파일명})
-        // userId 및 postId 포함하도록 바꿀 필요성 존재
+        // 후에 관리를 위해 userId 및 postId 포함하도록 바꿀 필요성 존재
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
-                .acl(ObjectCannedACL.PUBLIC_READ)
-                .build();
+                .build(); // 비공개 파일에 대해 Presigned URL 생성
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(60)) // url 유효시간 1시간으로 설정
+                .signatureDuration(Duration.ofMinutes(10)) // 업로드 url 유효시간
                 .putObjectRequest(putObjectRequest)
                 .build();
 
@@ -61,7 +59,7 @@ public class S3Service {
                 .build();
 
         GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(60)) // url 유효시간 1시간으로 설정
+                .signatureDuration(Duration.ofMinutes(60)) // 조회 url 유효시간 1시간으로 설정
                 .getObjectRequest(getObjectRequest)
                 .build();
 

@@ -1,8 +1,6 @@
 package prestudy.team4.board.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,18 +18,15 @@ public class S3Controller {
     private final S3Service s3Service;
 
     @GetMapping(value = "/put-url")
-    public ResponseEntity<S3UrlDto> getPutS3Url (
-            @RequestParam Long postId,
-            @RequestParam String filename
-    ) {
+    public ResponseEntity<S3UrlDto> getPutS3Url (@RequestParam String filename) {
         //Long userId = user.getId();
         S3UrlDto s3UrlDto = s3Service.getPutS3Url(filename);
-        return new ResponseEntity<>(s3UrlDto, HttpStatusCode.valueOf(200));
+        return ResponseEntity.ok(s3UrlDto);
     }
 
     @GetMapping(value = "/get-url")
     public ResponseEntity<S3UrlDto> getGetS3Url(@RequestParam String key) {
         S3UrlDto s3UrlDto = s3Service.getGetS3Url(key);
-        return new ResponseEntity<>(s3UrlDto, HttpStatusCode.valueOf(200));
+        return ResponseEntity.ok(s3UrlDto);
     }
 }

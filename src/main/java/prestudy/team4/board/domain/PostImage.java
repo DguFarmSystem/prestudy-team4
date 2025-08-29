@@ -20,11 +20,11 @@ public class PostImage {
     private Post post; // 외래키 (postId). 게시글 한 개 당 이미지 N개 관계.
 
     @Column(nullable = false)
-    private String imageUrl; // 이미지 URL을 문자열로 저장. (NOT NULL)
+    private String imageKey; // 이미지 s3 key를 문자열로 저장. (NOT NULL)
 
     @Builder
-    public PostImage(String imageUrl) { // 생성자
-        this.imageUrl = imageUrl;
+    public PostImage(String imageKey) { // 생성자
+        this.imageKey = imageKey;
     }
 
     protected void setPost(Post post) { // Post 설정용 setter
