@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import prestudy.team4.board.domain.User;
+import prestudy.team4.board.domain.UserEntity;
 import prestudy.team4.board.dto.PostCreateDto;
 import prestudy.team4.board.dto.PostResponseDto;
 import prestudy.team4.board.dto.PostUpdateDto;
@@ -23,7 +23,7 @@ public class PostController {
     // 게시글 작성 (Post)
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserEntity user,
             @Valid @RequestBody PostCreateDto postCreateDto) {
         PostResponseDto postResponseDto = postService.createPost(user, postCreateDto);
         return new ResponseEntity<>(postResponseDto, HttpStatus.CREATED);
@@ -47,7 +47,7 @@ public class PostController {
     @PatchMapping("/{id}")
     public ResponseEntity<PostResponseDto> update(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserEntity user,
             @RequestBody @Valid PostUpdateDto postUpdateDto) {
         PostResponseDto postResponseDto = postService.updatePost(id, user, postUpdateDto);
         return ResponseEntity.ok(postResponseDto);
@@ -57,7 +57,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal UserEntity user) {
         postService.deletePost(id, user);
         return ResponseEntity.noContent().build();
     }

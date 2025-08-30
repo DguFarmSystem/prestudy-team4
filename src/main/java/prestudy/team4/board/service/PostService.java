@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prestudy.team4.board.domain.Post;
 import prestudy.team4.board.domain.PostImage;
-import prestudy.team4.board.domain.User;
+import prestudy.team4.board.domain.UserEntity;
 import prestudy.team4.board.dto.PostCreateDto;
 import prestudy.team4.board.dto.PostResponseDto;
 import prestudy.team4.board.dto.PostUpdateDto;
@@ -24,7 +24,7 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
 
     // 게시글 작성 (C)
     @Transactional(readOnly = false)
-    public PostResponseDto createPost(User user, PostCreateDto postCreateDto) {
+    public PostResponseDto createPost(UserEntity user, PostCreateDto postCreateDto) {
         Post post = Post.builder()
                 .title(postCreateDto.getTitle())
                 .content(postCreateDto.getContent())
@@ -64,11 +64,11 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
 
     // 게시글 수정 (U)
     @Transactional(readOnly = false)
-    public PostResponseDto updatePost(Long id, User user, PostUpdateDto postUpdateDto) {
+    public PostResponseDto updatePost(Long id, UserEntity user, PostUpdateDto postUpdateDto) {
         Post targetPost = postRepository.findByIdWithImages(id)
                 .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
 
-        if (!targetPost.getUser().getId().equals(user.getId())) {
+        if (!targetPost.getUser().getUserId().equals(user.getUserId())) {
             throw new AccessDeniedException("수정할 권한이 없어요.");
         }
 
@@ -88,10 +88,10 @@ public class PostService { // 서비스: 비즈니스 로직 담당.
 
     // 게시글 삭제 (D)
     @Transactional(readOnly = false)
-    public void deletePost(Long id, User user) {
+    public void deletePost(Long id, UserEntity user) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없어요."));
-        if (!post.getUser().getId().equals(user.getId())) {
+        if (!post.getUser().getUserId().equals(user.getUserId())) {
             throw new AccessDeniedException("삭제할 권한이 없어요.");
         }
         postRepository.delete(post);

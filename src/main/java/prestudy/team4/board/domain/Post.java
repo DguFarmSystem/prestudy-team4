@@ -40,7 +40,7 @@ public class Post extends BaseEntity {
 
     // 생성자 (새로운 글 등록 시 사용)
     @Builder
-    public Post(String title, String content, User user) {
+    public Post(String title, String content, UserEntity user) {
         this.title = title;
         this.content = content;
         this.user = user;
