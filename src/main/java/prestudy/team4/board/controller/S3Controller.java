@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import prestudy.team4.board.domain.User;
 import prestudy.team4.board.dto.S3UrlDto;
 import prestudy.team4.board.service.S3Service;
 
