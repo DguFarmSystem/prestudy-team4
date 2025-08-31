@@ -23,7 +23,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    //  세션에서 USER_ID 꺼내기
+    // 세션에서 USER_ID 꺼내기
     private Long getLoginUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -49,12 +49,18 @@ public class CommentController {
         Long userId = getLoginUserId(httpRequest);
         CommentResponseDto res = commentService.create(postId, userId, requestDto);
 
+        // 생성된 자원의 단건 조회 URI를 Location 헤더에 설정
         URI location = uriBuilder
                 .path("/api/v1/comments/{id}")
                 .buildAndExpand(res.commentId())
                 .toUri();
 
         return ResponseEntity.created(location).body(res);
+    }
+
+    @GetMapping("/comments/{commentId}")
+    public CommentResponseDto get(@PathVariable Long commentId) {
+        return commentService.getById(commentId);
     }
 
     @GetMapping("/posts/{postId}/comments")
