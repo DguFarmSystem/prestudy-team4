@@ -15,7 +15,13 @@ public class Comment {
     private Long commentId;
 
     @Column(nullable = false)
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY) // 댓글(N) : 게시글(1) 관계
+    @JoinColumn(name = "post_id", nullable = false) // Post 테이블의 post_id 컬럼과 매핑
+    private Post post;
+    
+    @ManyToOne(fetch = FetchType.LAZY) // 댓글(N) : 사용자(1) 관계
+    @JoinColumn(name = "user_id", nullable = false) // User 테이블의 user_id 컬럼과 매핑
+    private User user;
 
     @Column(nullable = false)
     private Long userId;
