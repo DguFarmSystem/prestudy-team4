@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "users") // user는 예약어이므로 테이블명을 users로 설정
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity{
