@@ -3,15 +3,18 @@ package prestudy.team4.board.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.User;
 
 @Getter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(
-        name = "likes",
+        name = "post_likes",
         uniqueConstraints = @UniqueConstraint(
-                name = "uk_likes_post_user",
-                columnNames = {"postId", "userId"}
+                name = "uk_post_like_post_user",
+                columnNames = {"post_id", "user_id"}
         )
 )
 public class PostLike {
@@ -20,10 +23,6 @@ public class PostLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;
 
-    @Column(nullable = false)
-    private Long postId;
-
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
@@ -31,5 +30,5 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
 }
+

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record CommentResponseDto(
         Long commentId,
         Long postId,
-        Long userId,
+        String userId,
         String content,
         LocalDateTime createdAt
 ) {}
