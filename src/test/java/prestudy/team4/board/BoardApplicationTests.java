@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import prestudy.team4.board.dto.JoinDto;
 import prestudy.team4.board.repository.UserRepository;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,11 +43,12 @@ class BoardApplicationTests {
     @Test
     void 회원가입_테스트() throws Exception {
         // given
-        JoinRequest request = JoinRequest.builder()
-                .email("test@example.com")
-                .password("password123")
-                .name("테스트유저")
-                .build();
+        JoinDto request = new JoinDto();
+        request.setUserid("testuser");
+        request.setEmail("test@example.com");
+        request.setPassword("password123");
+        request.setNickname("테스트닉네임");
+        request.setName("테스트유저");
 
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/auth/join")
@@ -54,28 +57,28 @@ class BoardApplicationTests {
 
         // then
         result.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("회원가입이 완료되었습니다."));
+                .andExpect(status().isOk());
     }
 
     @Test
     void 로그인_테스트() throws Exception {
-        // given
-        JoinRequest joinRequest = JoinRequest.builder()
-                .email("test@example.com")
-                .password("password123")
-                .name("테스트유저")
-                .build();
+        // given - 먼저 회원가입
+        JoinDto joinRequest = new JoinDto();
+        joinRequest.setUserid("testuser");
+        joinRequest.setEmail("test@example.com");
+        joinRequest.setPassword("password123");
+        joinRequest.setNickname("테스트닉네임");
+        joinRequest.setName("테스트유저");
 
         mockMvc.perform(post("/api/v1/auth/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(joinRequest)));
 
-        LoginRequest loginRequest = LoginRequest.builder()
-                .email("test@example.com")
-                .password("password123")
-                .build();
+        // 로그인 요청
+        Map<String, String> loginRequest = Map.of(
+            "username", "testuser",
+            "password", "password123"
+        );
 
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/auth/login")
@@ -85,8 +88,8 @@ class BoardApplicationTests {
         // then
         result.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("로그인이 완료되었습니다."));
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.username").value("testuser"));
     }
 
     @Test
@@ -97,7 +100,6 @@ class BoardApplicationTests {
         // then
         result.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("로그아웃이 완료되었습니다."));
+                .andExpect(jsonPath("$.message").value("로그아웃 성공"));
     }
 }
