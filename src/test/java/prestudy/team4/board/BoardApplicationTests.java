@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import prestudy.team4.board.dto.JoinRequest;
-import prestudy.team4.board.dto.LoginRequest;
 import prestudy.team4.board.repository.UserRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
