@@ -1,10 +1,14 @@
 // src/main/java/prestudy/team4/board/controller/CommentController.java
 package prestudy.team4.board.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import prestudy.team4.board.dto.CommentCreateDto;
 import prestudy.team4.board.dto.CommentResponseDto;
 import prestudy.team4.board.service.CommentService;
@@ -19,20 +23,44 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    // ⚠️ 임시: 로그인 안 붙였으니 userId는 헤더에서 직접 받기
-    private Long getLoginUserId(String header) {
-        if (header == null || header.isBlank()) throw new SecurityException("로그인 필요");
-        return Long.parseLong(header);
+    // 세션에서 USER_ID 꺼내기
+    private Long getLoginUserId(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+        Object val = session.getAttribute("USER_ID");
+        if (val == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+        if (val instanceof Number n) {
+            return n.longValue();
+        }
+        throw new UnauthorizedException("세션 사용자 식별값이 올바르지 않습니다.");
     }
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentResponseDto> create(
             @PathVariable Long postId,
-            @RequestHeader(name = "X-USER-ID", required = false) String userHeader,
-            @Valid @RequestBody CommentCreateDto request
+            @Valid @RequestBody CommentCreateDto requestDto,
+            HttpServletRequest httpRequest,
+            UriComponentsBuilder uriBuilder
     ) {
-        CommentResponseDto res = commentService.create(postId, getLoginUserId(userHeader), request);
-        return ResponseEntity.created(URI.create("/comments/" + res.id())).body(res);
+        Long userId = getLoginUserId(httpRequest);
+        CommentResponseDto res = commentService.create(postId, userId, requestDto);
+
+        // 생성된 자원의 단건 조회 URI를 Location 헤더에 설정
+        URI location = uriBuilder
+                .path("/api/v1/comments/{id}")
+                .buildAndExpand(res.commentId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(res);
+    }
+
+    @GetMapping("/comments/{commentId}")
+    public CommentResponseDto get(@PathVariable Long commentId) {
+        return commentService.getById(commentId);
     }
 
     @GetMapping("/posts/{postId}/comments")
@@ -43,9 +71,16 @@ public class CommentController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long commentId,
-            @RequestHeader(name = "X-USER-ID", required = false) String userHeader
+            HttpServletRequest httpRequest
     ) {
-        commentService.delete(commentId, getLoginUserId(userHeader));
+        Long userId = getLoginUserId(httpRequest);
+        commentService.delete(commentId, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 401 처리를 위한 간단한 런타임 예외
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    static class UnauthorizedException extends RuntimeException {
+        public UnauthorizedException(String msg) { super(msg); }
     }
 }

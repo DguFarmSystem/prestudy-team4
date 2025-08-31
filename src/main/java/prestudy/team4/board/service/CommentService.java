@@ -31,8 +31,15 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentResponseDto> listByPost(Long postId) {
-        return commentRepository.findByPostIdOrderByIdAsc(postId)
+        return commentRepository.findByPostIdOrderByCommentIdAsc(postId)
                 .stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public CommentResponseDto getById(Long commentId) {
+        Comment c = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+        return toResponse(c);
     }
 
     @Transactional
@@ -47,7 +54,7 @@ public class CommentService {
 
     private CommentResponseDto toResponse(Comment c) {
         return new CommentResponseDto(
-                c.getId(),
+                c.getCommentId(),
                 c.getPostId(),
                 c.getUserId(),
                 c.getContent(),
@@ -55,3 +62,4 @@ public class CommentService {
         );
     }
 }
+

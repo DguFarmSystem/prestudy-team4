@@ -4,7 +4,7 @@ package prestudy.team4.board.dto;
 import java.time.LocalDateTime;
 
 public record CommentResponseDto(
-        Long id,
+        Long commentId,
         Long postId,
         Long userId,
         String content,
