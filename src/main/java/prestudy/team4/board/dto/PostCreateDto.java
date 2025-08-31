@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class PostCreateDto {
@@ -13,4 +15,6 @@ public class PostCreateDto {
 
     @NotBlank(message = "내용은 비워둘 수 없어요.") // NOT NULL
     private String content;
+
+    private List<String> imageKeys; // 업로드할 이미지들을 받아오자.
 }
