@@ -5,10 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import prestudy.team4.board.dto.JoinDto;
 import prestudy.team4.board.service.JoinService;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class JoinController{
