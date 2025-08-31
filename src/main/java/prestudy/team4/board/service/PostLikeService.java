@@ -2,7 +2,6 @@
 package prestudy.team4.board.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,7 @@ public class PostLikeService {
         try {
             postLikeRepository.save(PostLike.builder()
                     .post(post)
-                    .user((User) user)
+                    .user(user)
                     .build());
         } catch (DataIntegrityViolationException e) {
             // 동시성 상황에서 UNIQUE(post_id,user_id) 위반 → 멱등하게 무시
