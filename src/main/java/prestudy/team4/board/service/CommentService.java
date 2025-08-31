@@ -2,7 +2,6 @@
 package prestudy.team4.board.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prestudy.team4.board.domain.Comment;
@@ -34,7 +33,7 @@ public class CommentService {
         Comment saved = commentRepository.save(
                 Comment.builder()
                         .post(post)          // ✅ 연관 엔티티로 설정
-                        .user((User) user)          // ✅ 연관 엔티티로 설정
+                        .user(user)          // ✅ 연관 엔티티로 설정
                         .content(req.content())
                         .build()
         );
